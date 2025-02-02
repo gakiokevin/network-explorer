@@ -34,5 +34,5 @@ export const DelegationHistory = async () => {
     })
     .reverse()
 
-  return <DelegationHistoryGraph data={cleanedData} />
+  return null
 }
