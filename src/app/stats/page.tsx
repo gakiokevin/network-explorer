@@ -11,19 +11,20 @@ export default async function Page() {
   return (
     <MapCover title="Network Stats">
       <div className="overflow-y-auto pr-2">
-        {/* @ts-expect-error Async Server Component */}
-        <HntInfo />
-        {/* @ts-expect-error Async Server Component */}
-        <SubDaoInfo subDao={"iot"} />
-        {/* @ts-expect-error Async Server Component */}
-        <SubDaoInfo subDao={"mobile"} />
-        {/* @ts-expect-error Async Server Component */}
-        <NetworkUsage />
-        {/* @ts-expect-error Async Server Component */}
-        <HntEmissions />
-        {/* @ts-expect-error Async Server Component */}
-        <Governance />
+        <p>Currently working on this page</p>
       </div>
     </MapCover>
   )
 }
+//   {/* @ts-expect-error Async Server Component */}
+//   <HntInfo />
+//   {/* @ts-expect-error Async Server Component */}
+//   <SubDaoInfo subDao={"iot"} />
+//   {/* @ts-expect-error Async Server Component */}
+//   <SubDaoInfo subDao={"mobile"} />
+//   {/* @ts-expect-error Async Server Component */}
+//   <NetworkUsage />
+//   {/* @ts-expect-error Async Server Component */}
+//   <HntEmissions />
+//   {/* @ts-expect-error Async Server Component */}
+//  <Governance/>
