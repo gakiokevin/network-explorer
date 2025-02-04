@@ -20,6 +20,7 @@ import Map, {
   MapStyle,
   NavigationControl,
   Source,
+  LayerProps,
 } from "react-map-gl"
 import { gaEvent } from "../GATracker"
 import { NetworkCoverageLayer } from "./NetworkCoverageLayer"
@@ -37,54 +38,27 @@ import {
 } from "./utils"
 import { mockDroneRadars } from "./mockdata"
 
-// // Mock data for drone concentration radars
-// const mockDroneRadars = [
-//   {
-//     id: "drone-1",
-//     lat: 37.7749, // Latitude
-//     lng: -122.4194, // Longitude
-//     status: "active", // "active" or "inactive"
-//     concentration: 0.8, // Concentration level (0 to 1)
-//   },
-//   {
-//     id: "drone-2",
-//     lat: 34.0522,
-//     lng: -118.2437,
-//     status: "inactive",
-//     concentration: 0.3,
-//   },
-//   {
-//     id: "drone-3",
-//     lat: 36.1699,
-//     lng: -115.1398,
-//     status: "active",
-//     concentration: 0.9,
-//   },
-// ];
-
-// Convert mock data to GeoJSON format
 const droneRadarsGeoJSON = {
-  type: "FeatureCollection",
-  features:
-    mockDroneRadars &&
-    mockDroneRadars.map((radar) => ({
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [radar.lng, radar.lat],
-      },
-      properties: {
-        id: radar.id,
-        status: radar.status,
-        concentration: radar.concentration,
-      },
-    })),
+  type: "FeatureCollection" as const, // 👈 Forces strict type
+  features: (mockDroneRadars ?? []).map((radar) => ({
+    type: "Feature" as const, //  Forces strict type
+    geometry: {
+      type: "Point" as const, //  Forces strict type
+      coordinates: [radar.lng, radar.lat],
+    },
+    properties: {
+      id: radar.id,
+      status: radar.status,
+      concentration: radar.concentration,
+    },
+  })),
 }
 
 // Define a layer style for drone radars
-const droneRadarLayer: Layer = {
+const droneRadarLayer: LayerProps = {
   id: "drone_radars",
   type: "circle",
+  source: "drone_radars_source",
   paint: {
     "circle-radius": [
       "interpolate",
@@ -201,17 +175,15 @@ export function HotspotsMap({ children }: { children: React.ReactNode }) {
     [router, selectedHex?.hexId]
   )
 
-  const onDroneRadarClick = useCallback((event: MapLayerMouseEvent) => {
-    event.features?.forEach((feature) => {
-      if (feature.layer.id === "drone_radars") {
-        const { id, status, concentration } = feature.properties
-        console.log(
-          `Drone Radar ID: ${id}, Status: ${status}, Concentration: ${concentration}`
-        )
-        // Optionally, navigate to a details page or show a tooltip
-      }
-    })
-  }, [])
+  // const onDroneRadarClick = useCallback((event: MapLayerMouseEvent) => {
+  //   event.features?.forEach((feature) => {
+  //     if (feature.layer.id === "drone_radars") {
+  //       const { id, status, concentration } = feature.properties;
+  //       console.log(`Drone Radar ID: ${id}, Status: ${status}, Concentration: ${concentration}`);
+  //       // Optionally, navigate to a details page or show a tooltip
+  //     }
+  //   });
+  // }, []);
 
   useEffect(() => {
     gaEvent({ action: "map_load" })
@@ -232,7 +204,7 @@ export function HotspotsMap({ children }: { children: React.ReactNode }) {
       mapLib={maplibregl}
       interactiveLayerIds={["hexes_layer", "drone_radars"]}
       onLoad={selectHexByPathname}
-      onClick={onDroneRadarClick}
+      // onClick={onDroneRadarClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       cursor={cursor}
@@ -248,7 +220,7 @@ export function HotspotsMap({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Add the drone radar layer */}
-      <Source type="geojson" data={droneRadarsGeoJSON}>
+      <Source id="drone_radars_source" type="geojson" data={droneRadarsGeoJSON}>
         <Layer {...droneRadarLayer} />
       </Source>
 
